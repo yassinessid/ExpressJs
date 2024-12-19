@@ -10,5 +10,8 @@ router.put('/update/:id', update)
 router.delete('/delete/:id', deleteU)
 router.get('/search', searchByPriceRange)
 
+router.get('/search-category', (req, res) => {
+    res.render('categorie'); // Twig template `index.twig` sera rendu
+});
 
 module.exports = router

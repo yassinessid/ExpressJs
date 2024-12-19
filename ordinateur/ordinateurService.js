@@ -77,5 +77,34 @@ const searchByPriceRange = async (req, res) => {
 
 
 
+const socketIO = (server) => {
+    const io = socketIo(server);
+  
 
-module.exports = { create, list, update, deleteU, searchByPriceRange }   
+    io.on('connection', (socket) => {
+        console.log('User connected via Socket.IO');
+
+        socket.on('display-ord', async (categorie) => {
+                    try {
+                        let ords;
+                        if (categorie) {
+                            ords = await ordinateurModel.find({ categorie });
+                            console.log(`Data found for category "${categorie}":`, ords);
+                        } else {
+                       
+                            ords = await ordinateurModel.find();
+                            console.log('All data:', ords);
+                        }
+                        io.emit('ordList', ords); 
+                    } catch (error) {
+                        console.error('Error fetching data:', error.message);
+                        io.emit('error', { message: 'Failed to fetch data' }); 
+                    }
+         });
+
+    });
+
+    return io;
+};
+
+module.exports = { socketIO ,create, list, update, deleteU, searchByPriceRange }
