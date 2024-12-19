@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Ordinateur</title>
+</head>
+<body>
+    <h1>Search Ordinateur by Price</h1>
+    <form id="searchForm">
+        <label for="minPrice">Min Price:</label>
+        <input type="number" id="minPrice" name="minPrice" required>
+        <label for="maxPrice">Max Price:</label>
+        <input type="number" id="maxPrice" name="maxPrice" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var minPrice = document.getElementById('minPrice').value;
+            var maxPrice = document.getElementById('maxPrice').value;
+
+            fetch(`/ordinateurs/search?minPrice=${minPrice}&maxPrice=${maxPrice}`)
+                .then(response => response.json())
+                .then(data => {
+                    var resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
+                    data.forEach(ordinateur => {
+                        var p = document.createElement('p');
+                        p.innerText = `Model: ${ordinateur.model}, Category: ${ordinateur.category}, Date: ${new Date(ordinateur.dateFabrication).toLocaleDateString()}, Price: ${ordinateur.prix}`;
+                        resultsDiv.appendChild(p);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
